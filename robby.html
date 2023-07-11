@@ -24,7 +24,7 @@
 
         async function createRoom() {
             var name = document.getElementById('roomname').value;
-            var sql = `insert into Rooms (name) values('${name}');`;
+            var sql = `insert into Rooms (name,topic,turn) values('${name}',"hoge",0);`;
             var roomId = await osql.connectInsert(sql);
             console.log(roomId);
 

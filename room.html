@@ -19,6 +19,9 @@
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
 
+            var studentid = me.studentid;
+            insertParticipation(studentid)
+
             var sql = `select * from Rooms where id = ${roomId};`;
             var objects = await osql.connect(sql);
 
@@ -27,11 +30,24 @@
 
             await refreshComments();
             setInterval(refreshComments, 2000);
+
+            setInterval(startJudege(), 2000);
         });
+
+        async function insertParticipation(studentid) {
+            var sql = `insert into Participation(userId, roomId)values("${studentid}", ${roomId})`
+            var objects = await osql.connect(sql);
+
+            var sql = `select * from Participation where roomId = ${roomId}`;
+            var objects = await osql.connect(sql);
+            console.log(objects);
+        }
 
         async function newComment() {
             var name = document.getElementById('comment').value;
-            var sql = `insert into Comments (roomId, userId, comment, time) values(${roomId}, '${me.id}','${name}', now());`;
+            var sql0 = `select `
+            var sql = `update Rooms set topic ='${name}' where id= ${roomId}`;
+            //var sql = `insert into Rooms (roomId, userId, comment, time) values(${roomId}, '${me.id}','${name}', now());`;
             var commentId = await osql.connectInsert(sql);
             console.log(commentId);
 
@@ -39,7 +55,7 @@
         }
 
         async function refreshComments() {
-            var sql = `select * from Comments where roomId = ${roomId} order by time desc limit 10;`;
+            var sql = `select * from Rooms where id = ${roomId};`;
             var objects = await osql.connect(sql);
             console.log(objects);
             var html = '';
@@ -48,13 +64,27 @@
                 html = html + '<tr>';
                 var object = objects[i];
                 html = html + `<td>${object.id}</td>`;
-                html = html + `<td>${object.time}</td>`;
-                html = html + `<td>${object.userId}</td>`;
-                html = html + `<td>${object.comment}</td>`;
+                html = html + `<td>${object.name}</td>`;
+                html = html + `<td>${object.topic}</td>`;
+                html = html + `<td>${object.turn}</td>`;
                 html = html + '</tr>';
             }
             html = html + '</table>';
             document.getElementById('comments').innerHTML = html;
+        }
+
+        async function startJudge() {
+
+        }
+
+        async function start() {
+            //順番を決め
+            //誰がルームにはいっているかを持ってく
+            //遷移
+            //2秒ごとにページを更新して、他の人も遷移
+
+
+
         }
 
     </script>
@@ -74,6 +104,7 @@
     </div>
     <br>
     <div id="comments"></div>
+    <button onclick="start()">start</button>
 </body>
 
 </html>
