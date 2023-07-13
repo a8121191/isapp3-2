@@ -20,7 +20,8 @@
             document.getElementById('lastname').innerHTML = me.lname;
 
             var studentid = me.studentid;
-            insertParticipation(studentid)
+            var sql = `select * from `;
+            await insertParticipation(studentid);
 
             var sql = `select * from Rooms where id = ${roomId};`;
             var objects = await osql.connect(sql);
@@ -31,7 +32,8 @@
             await refreshComments();
             setInterval(refreshComments, 2000);
 
-            setInterval(startJudege(), 2000);
+            await startJudge();
+            setInterval(startJudge, 2000);
         });
 
         async function insertParticipation(studentid) {
@@ -74,17 +76,29 @@
         }
 
         async function startJudge() {
+            var sql = `select turn from Rooms where id = ${roomId}`;
+            var myRoomTurn = await osql.connect(sql);
+            console.log(myRoomTurn);
+            myRoomTurn = Number(myRoomTurn[0].turn);
 
+            if (myRoomTurn == 1) {
+                window.location.href = 'game.html'
+            }
         }
 
         async function start() {
-            //順番を決め
-            //誰がルームにはいっているかを持ってく
-            //遷移
-            //2秒ごとにページを更新して、他の人も遷移
+            var sql = `select * from Participation where roomId= ${roomId}`;
+            var objects = await osql.connect(sql);
+            console.log(objects);
 
+            //for (var i = 0; i < objects.length; i++) {
 
+            //}
 
+            var sql = `update Rooms set turn = ${1} where id = ${roomId}`;
+            var startState = await osql.connect(sql);
+
+            //window.location.href = 'game.html'
         }
 
     </script>
