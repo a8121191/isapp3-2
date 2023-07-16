@@ -13,6 +13,7 @@
 
         var me;
         var roomId = osql.getParam('roomId');
+        sessionStorage.setItem('roomId', roomId);
 
         $(document).ready(async function () {
             me = await osql.getMe();
@@ -80,6 +81,23 @@
             var myRoomTurn = await osql.connect(sql);
             console.log(myRoomTurn);
             myRoomTurn = Number(myRoomTurn[0].turn);
+            console.log(myRoomTurn)
+
+            var sql = `select * from Participation where roomId = ${roomId}`;
+            var objects = await osql.connect(sql);
+            var num = Number(objects[0].id);
+
+
+            for (var i = 0; i < objects.length; i++) {
+                var sql = `update Participation set order_group = ${i + 1} where id = ${num + i}`;
+                var check = await osql.connect(sql);
+
+            }
+            var sql = `select * from Participation where roomId = ${roomId}`;
+            var objects = await osql.connect(sql);
+            console.log(objects);
+
+
 
             if (myRoomTurn == 1) {
                 window.location.href = 'game.html'

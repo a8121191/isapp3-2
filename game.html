@@ -11,6 +11,9 @@
     <script>
         osql.requireLogin();
 
+        var me;
+
+
         $(document).ready(async function () {
             var me = await osql.getMe();
             console.log(me);
@@ -19,10 +22,34 @@
 
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
+
+            var roomId = sessionStorage.getItem('roomId');
+
+            await playGame();
         });
 
         function logout() {
             osql.logout();
+        }
+
+        async function playGame() {
+            var sql = `select * from Participation`;
+            var objects = await osql.connect(sql);
+            console.log(objects)
+
+            var sql = `select order from Participation where roomId = ${roomId} and userId = ${me.id}`;
+            var orderArray = await osql.connect(sql);
+            var orderMe = orderA
+
+            var sql = `select turn from Rooms where id = ${roomId}`
+            var turnArray = await osql.connect(sql);
+            turnMe[0].turn
+
+
+            var name = ''
+            sessionStorage.setItem();
+
+
         }
 
     </script>
